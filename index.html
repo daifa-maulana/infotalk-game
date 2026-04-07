@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFOTALK GAME - Tebak Kata</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <div id="music-control" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <button id="btnMusic" style="border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; border: 2px solid white; background: #333; color: white;">🔈</button>
+        <audio id="bgMusic" loop>
+            <source src="https://www.bensound.com/bensound-music/bensound-energy.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div id="screen-setup" class="container">
+        <h1 class="title">INFOTALK <span>GAME</span></h1>
+        <p class="subtitle">Pengaturan Permainan</p>
+
+        <div class="card">
+            <div class="input-group">
+                <label>Nama Peserta:</label>
+                <input type="text" id="playerName" placeholder="Masukkan nama peserta..." autocomplete="off">
+            </div>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>Kategori Kata:</label>
+                    <select id="wordType">
+                        <option value="5">5 Huruf</option>
+                        <option value="6">6 Huruf</option>
+                        <option value="7">7 Huruf</option>
+                        <option value="campur">Campur (Acak)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Durasi Game:</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" id="timeValue" value="1" min="1" style="width: 60px; flex: 1;">
+                        <select id="timeUnit" style="flex: 2;">
+                            <option value="60">Menit</option>
+                            <option value="1">Detik</option>
+                            <option value="3600">Jam</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Mekanisme Sembunyi:</label>
+                <select id="hideMechanism" onchange="toggleCustomHide()">
+                    <option value="manual">Manual (Spasi untuk sembunyi)</option>
+                    <option value="auto">Otomatis (Sesuai detik)</option>
+                </select>
+            </div>
+
+            <div id="customHideGroup" class="input-group" style="display: none; background: #222; padding: 10px; border-radius: 8px;">
+                <label>Kata Muncul Selama (Detik):</label>
+                <input type="number" id="autoHideDuration" value="3" min="1">
+            </div>
+
+            <button id="btnStartGame" class="btn-primary" style="margin-top: 20px;">MEMUAT DATABASE...</button>
+            <button id="btnShowLeaderboard" class="btn-secondary" style="margin-top: 10px;">LIHAT SKOR TERBAIK</button>
+        </div>
+    </div>
+
+    <div id="screen-game" class="container" style="display: none;">
+        <div class="game-header">
+            <div class="stat-box">Skor: <span id="currentScore">0</span></div>
+            <div class="stat-box timer">Waktu: <span id="timerDisplay">60</span>s</div>
+        </div>
+
+        <div class="card" style="text-align: center; margin-top: 30px;">
+            <h2 id="wordDisplay" class="word-display">_ _ _ _ _</h2>
+            <p id="gameHint" style="color: var(--text-muted); margin-top: 10px;"></p>
+        </div>
+
+        <div class="action-buttons">
+            <button id="btnSpace" class="btn-action btn-action-hide">SEMBUNYIKAN (SPASI)</button>
+            <button id="btnPass" class="btn-action btn-action-pass">GANTI / LEWATI (X)</button>
+        </div>
+    </div>
+
+    <div id="screen-result" class="container" style="display: none; text-align: center;">
+        <h1 class="title">WAKTU <span>HABIS!</span></h1>
+        <div class="card" style="margin: 30px auto; max-width: 400px;">
+            <h2 id="resultName">Nama</h2>
+            <p>Berhasil menebak:</p>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary);">
+                <span id="finalScore">0</span>
+            </div>
+            <p>Kata</p>
+            <p id="savingStatus" style="font-size: 0.9rem; margin-top: 15px; font-weight: bold;"></p>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; margin: 0 auto;">
+            <button id="btnResultLeaderboard" class="btn-primary">LIHAT LEADERBOARD</button>
+            <button id="btnPlayAgain" class="btn-secondary">MAIN LAGI</button>
+        </div>
+    </div>
+
+    <div id="screen-leaderboard" class="container" style="display: none;">
+        <h1 class="title">TOP <span>SKOR</span></h1>
+        <div class="card" style="margin-top: 20px;">
+            <ul id="leaderboardList" class="leaderboard-list">
+                </ul>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button id="btnBackToMenu" class="btn-primary" style="flex: 2;">KEMBALI KE MENU</button>
+            <button id="btnResetLeaderboard" class="btn-secondary" style="flex: 1; background: #dc3545;">RESET DATA</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

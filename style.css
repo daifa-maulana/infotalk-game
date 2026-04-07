@@ -1,0 +1,79 @@
+:root {
+    --bg: #09090b; --surface: #18181b; --border: #27272a;
+    --primary: #3b82f6; --primary-glow: rgba(59, 130, 246, 0.5);
+    --success: #10b981; --danger: #ef4444; --warning: #fbbf24;
+    --text-main: #f4f4f5; --text-muted: #a1a1aa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+body {
+    background-color: var(--bg); color: var(--text-main);
+    font-family: 'Outfit', sans-serif; display: flex;
+    align-items: center; justify-content: center; min-height: 100vh;
+}
+
+.app-container {
+    width: 100%; max-width: 700px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    text-align: center; position: relative; overflow: hidden;
+}
+
+h1 { font-size: 2.2rem; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; }
+.subtitle { color: var(--text-muted); margin-bottom: 30px; font-weight: 300; }
+
+.form-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; text-align: left; }
+.form-row { display: flex; gap: 15px; }
+.form-col { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+label { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+
+input, select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text-main); padding: 14px 18px; border-radius: 10px;
+    font-family: 'Outfit', sans-serif; font-size: 1rem; transition: 0.2s; outline: none;
+}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+input:disabled, select:disabled, button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn {
+    width: 100%; padding: 16px; border-radius: 10px; border: none;
+    font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700;
+    cursor: pointer; transition: 0.2s; margin-bottom: 10px;
+}
+.btn-primary { background: var(--text-main); color: var(--bg); }
+.btn-primary:hover:not(:disabled) { background: var(--primary); color: white; box-shadow: 0 0 15px var(--primary-glow); }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+.btn-outline:hover { background: var(--border); color: var(--text-main); }
+
+.timer { font-family: 'Space Mono', monospace; font-size: 3.5rem; font-weight: 700; color: var(--primary); }
+.timer.warning { color: var(--danger); animation: blink 0.5s infinite; }
+@keyframes blink { 50% { opacity: 0.5; } }
+
+.word-display {
+    font-size: 5rem; font-weight: 900; letter-spacing: 8px; margin: 30px 0;
+    text-transform: uppercase; min-height: 120px; display: flex;
+    align-items: center; justify-content: center;
+}
+
+.score-display { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 20px; }
+.score-display span { color: var(--success); font-weight: 700; font-size: 1.5rem; }
+.final-score { font-size: 5rem; font-weight: 900; color: var(--success); margin: 20px 0; }
+
+.game-controls { display: flex; gap: 15px; justify-content: center; margin-top: 10px; }
+.btn-action {
+    flex: 1; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem;
+    cursor: pointer; border: 2px solid transparent; transition: 0.2s;
+}
+.btn-action-hide { background: var(--primary); color: white; }
+.btn-action-correct { background: var(--success); color: var(--bg); }
+.btn-action-pass { background: transparent; border-color: var(--danger); color: var(--danger); }
+
+.hint { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--text-muted); margin-top: 25px; }
+
+.leaderboard-list { list-style: none; margin: 20px 0; max-height: 280px; overflow-y: auto; padding-right: 5px; }
+.leaderboard-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg); border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+.rank-1 { border-color: #fbbf24; color: #fbbf24; }
+.rank-2 { border-color: #94a3b8; color: #94a3b8; }
+.rank-3 { border-color: #b45309; color: #b45309; }
+.score-badge { background: var(--border); padding: 5px 12px; border-radius: 12px; font-family: 'Space Mono'; font-weight: bold; }
