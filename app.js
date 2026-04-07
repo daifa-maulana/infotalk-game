@@ -45,8 +45,26 @@ function toggleCustomHide() {
 // 3. LOGIKA GAME
 // ==========================================
 function getWordsByType(type) {
-    if (type === "campur") return allWordsDB.map(w => w.word);
-    return allWordsDB.filter(w => w.length === parseInt(type)).map(w => w.word);
+    let wordsList = type === "campur" ? allWordsDB.map(w => w.word) : allWordsDB.filter(w => w.length === parseInt(type)).map(w => w.word);
+
+    // Ambil riwayat kata yang sudah dimainkan dari memori laptop
+    let playedWords = JSON.parse(localStorage.getItem("playedWords")) || [];
+
+    // Saring agar hanya mengambil kata-kata yang BELUM pernah dimainkan
+    let unplayedWords = wordsList.filter(w => !playedWords.includes(w));
+
+    // Jika stok kata untuk kategori ini sudah habis semua...
+    if (unplayedWords.length === 0 && wordsList.length > 0) {
+        alert("⚠️ Semua kata di kategori ini sudah pernah keluar! Sistem akan mereset dan mengacak ulang dari awal.");
+        
+        // Hapus daftar kata kategori ini dari memori agar bisa dipakai lagi
+        playedWords = playedWords.filter(w => !wordsList.includes(w));
+        localStorage.setItem("playedWords", JSON.stringify(playedWords));
+        
+        return wordsList; // Kembalikan semua kata seperti semula
+    }
+
+    return unplayedWords;
 }
 
 function startGame() {
@@ -90,6 +108,14 @@ function showNewWord() {
     
     const randomIndex = Math.floor(Math.random() * activeWords.length);
     currentWordText = activeWords.splice(randomIndex, 1)[0];
+    
+    // --- FITUR BARU: Catat kata yang baru keluar ke memori laptop ---
+    let playedWords = JSON.parse(localStorage.getItem("playedWords")) || [];
+    if (!playedWords.includes(currentWordText)) {
+        playedWords.push(currentWordText);
+        localStorage.setItem("playedWords", JSON.stringify(playedWords));
+    }
+    // ----------------------------------------------------------------
     
     document.getElementById("wordDisplay").innerText = currentWordText;
     isWordVisible = true;
@@ -254,7 +280,11 @@ async function resetLeaderboardData() {
         if (error) {
             alert("Gagal mereset data! Coba lagi.");
         } else {
-            alert("✅ Semua data Leaderboard berhasil dihapus!");
+            // --- FITUR BARU: Hapus riwayat kata dari memori laptop ---
+            localStorage.removeItem("playedWords");
+            // ---------------------------------------------------------
+            
+            alert("✅ Semua data Leaderboard & Riwayat Kata berhasil dihapus!");
             loadLeaderboard(); 
         }
         
