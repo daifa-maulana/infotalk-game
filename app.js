@@ -8,29 +8,11 @@ const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 let allWordsDB = [], activeWords = [];
 let score = 0, timeLeft = 0, correctCount = 0, wrongCount = 0;
 let timerInterval, autoHideTimeout;
-let isPlaying = false, isWordVisible = true, isMusicPlaying = false;
+let isPlaying = false, isWordVisible = true;
 let currentPlayer = "", currentWordText = "", hideMechanism = "manual";
 
 // ==========================================
-// 2. MUSIK BACKGROUND
-// ==========================================
-const bgMusic = document.getElementById("bgMusic");
-const btnMusic = document.getElementById("btnMusic");
-
-bgMusic.volume = 0.5; // Set volume 50%
-btnMusic.addEventListener("click", () => {
-    if (isMusicPlaying) {
-        bgMusic.pause();
-        btnMusic.innerText = "🔈";
-    } else {
-        bgMusic.play().catch(e => console.log("Autoplay dicegah browser", e));
-        btnMusic.innerText = "🔊";
-    }
-    isMusicPlaying = !isMusicPlaying;
-});
-
-// ==========================================
-// 3. INIT & NAVIGASI
+// 2. INIT & NAVIGASI
 // ==========================================
 async function fetchWordsFromDatabase() {
     const btnStart = document.getElementById("btnStartGame");
@@ -60,7 +42,7 @@ function toggleCustomHide() {
 }
 
 // ==========================================
-// 4. LOGIKA GAME
+// 3. LOGIKA GAME
 // ==========================================
 function getWordsByType(type) {
     if (type === "campur") return allWordsDB.map(w => w.word);
@@ -190,7 +172,7 @@ function endGame() {
 }
 
 // ==========================================
-// 5. DATABASE LEADERBOARD & RESET
+// 4. DATABASE LEADERBOARD & RESET
 // ==========================================
 async function saveScoreToSupabase() {
     const timeVal = document.getElementById("timeValue").value;
@@ -260,7 +242,6 @@ async function loadLeaderboard() {
     });
 }
 
-// FUNGSI RESET LEADERBOARD
 async function resetLeaderboardData() {
     const isConfirm = confirm("⚠️ PERHATIAN! ⚠️\nApakah kamu yakin ingin MENGHAPUS SEMUA DATA Leaderboard? Tindakan ini tidak bisa dibatalkan.");
     
@@ -268,14 +249,13 @@ async function resetLeaderboardData() {
         document.getElementById("btnResetLeaderboard").innerText = "MENGHAPUS...";
         document.getElementById("btnResetLeaderboard").disabled = true;
 
-        // Menghapus semua baris yang ID-nya lebih dari 0
         const { error } = await db.from('leaderboard').delete().gt('id', 0);
 
         if (error) {
             alert("Gagal mereset data! Coba lagi.");
         } else {
             alert("✅ Semua data Leaderboard berhasil dihapus!");
-            loadLeaderboard(); // Refresh tampilan
+            loadLeaderboard(); 
         }
         
         document.getElementById("btnResetLeaderboard").innerText = "RESET DATA";
@@ -284,7 +264,7 @@ async function resetLeaderboardData() {
 }
 
 // ==========================================
-// 6. EVENT LISTENERS
+// 5. EVENT LISTENERS
 // ==========================================
 document.getElementById("btnStartGame").addEventListener("click", startGame);
 document.getElementById("btnShowLeaderboard").addEventListener("click", loadLeaderboard);
